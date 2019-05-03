@@ -23,6 +23,9 @@ app.use(express.json());
 app.use(express.static('./client'));
 app.use(express.static('./uploads'));
 
+app.get('/', (req, res) => {
+  res.json('help');
+});
 // upload file. currently uploading to a directory
 // replace with uploading to a DB later
 app.post('/upload', upload.single('photo'), (req, res) => {
