@@ -3,7 +3,7 @@ const path = require('path');
 const fs = require('fs');
 const morgan = require('morgan');
 const multer = require('multer');
-const directoryPath = path.join(__dirname, '../uploads/images');
+const directoryPath = path.join(__dirname, './uploads/images');
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, directoryPath);
@@ -23,9 +23,9 @@ app.use(express.json());
 app.use(express.static('./client'));
 app.use(express.static('./uploads'));
 
-app.get('/', (req, res) => {
-  res.json('help');
-});
+// app.get('/', (req, res) => {
+//   res.json('help');
+// });
 // upload file. currently uploading to a directory
 // replace with uploading to a DB later
 app.post('/upload', upload.single('photo'), (req, res) => {
