@@ -1,21 +1,21 @@
-// function fetchImages (){
-//   while (gallery.firstChild) {
-//     gallery.removeChild(gallery.firstChild);
-//   }
+function fetchImages (){
+  while (gallery.firstChild) {
+    gallery.removeChild(gallery.firstChild);
+  }
 
-//   fetch('/images')
-//     .then(res => res.json())
-//     .then(res => {
-//       res.forEach(image => {
-//         const div = document.createElement('div');
-//         const img = document.createElement('img');
-//         img.src = `/images/${image}`;
-//         img.classList.add('gallery-img');
-//         div.appendChild(img);
-//         gallery.appendChild(div);
-//       });
-//     });
-// }
+  fetch('/images')
+    .then(res => res.json())
+    .then(res => {
+      res.forEach(image => {
+        const div = document.createElement('div');
+        const img = document.createElement('img');
+        img.src = `/images/${image}`;
+        img.classList.add('gallery-img');
+        div.appendChild(img);
+        gallery.appendChild(div);
+      });
+    });
+}
 
 function submitImage (e) {
   e.preventDefault();
@@ -24,10 +24,11 @@ function submitImage (e) {
   const formData = new FormData();
   formData.append('image', curFiles[0]);
 
-  fetch('/api/image', {
+  fetch('/api/images', {
     method: 'POST',
     body: formData
-  }).then(res => console.log(res));
+  }).then(res => res.json())
+    .then(res => console.log(res));
   input.value = null;
 }
 

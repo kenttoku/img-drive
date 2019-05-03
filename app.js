@@ -18,7 +18,7 @@ app.use(express.static('public'));
 app.use(express.json());
 
 // Mount routers
-app.use('/api/image', imageRouter);
+app.use('/api/images', imageRouter);
 
 // Listen for incoming connections
 // eslint-disable-next-line no-console
