@@ -11,6 +11,7 @@ const {
 const express = require('express');
 const getStream = require('into-stream');
 const multer = require('multer');
+const uuidv4 = require('uuid/v4');
 
 const {
   AZURE_STORAGE_ACCOUNT_NAME,
@@ -30,12 +31,7 @@ const uploadOptions = { bufferSize: 4 * ONE_MEGABYTE, maxBuffers: 20 };
 const sharedKeyCredential = new SharedKeyCredential(AZURE_STORAGE_ACCOUNT_NAME, AZURE_STORAGE_ACCOUNT_ACCESS_KEY);
 const pipeline = StorageURL.newPipeline(sharedKeyCredential);
 const serviceURL = new ServiceURL(url, pipeline);
-const getBlobName = originalName => {
-  // Use a random number to generate a unique file name,
-  // removing "0." from the start of the string.
-  const identifier = Math.random().toString().replace(/0\./, '');
-  return `${identifier}-${originalName}`;
-};
+const getBlobName = originalName => `${uuidv4()}-${originalName}`;
 
 router.post('/', uploadStrategy, (req, res) => {
   const aborter = Aborter.timeout(30 * ONE_MINUTE);
