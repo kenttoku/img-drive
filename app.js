@@ -3,6 +3,8 @@ const morgan = require('morgan');
 
 const { PORT } = require('./config');
 
+const imageRouter = require('./routers/image-router');
+
 // Create an Express app
 const app = express();
 
@@ -14,6 +16,9 @@ app.use(express.static('public'));
 
 // Parse request body
 app.use(express.json());
+
+// Mount routers
+app.use('/api/image', imageRouter);
 
 // Listen for incoming connections
 // eslint-disable-next-line no-console
