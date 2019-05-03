@@ -1,11 +1,20 @@
 const express = require('express');
 const morgan = require('morgan');
+
+const { PORT } = require('./config');
+
+// Create an Express app
 const app = express();
-const PORT = 8080;
 
+// Log all requests
 app.use(morgan('dev'));
-app.use(express.json());
-app.use(express.static('./public'));
 
+// Create a static web server
+app.use(express.static('public'));
+
+// Parse request body
+app.use(express.json());
+
+// Listen for incoming connections
 // eslint-disable-next-line no-console
 app.listen(PORT, () => console.log(`Server up on PORT ${PORT}`));
