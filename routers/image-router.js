@@ -1,6 +1,5 @@
 const {
   Aborter,
-  BlobURL,
   BlockBlobURL,
   ContainerURL,
   ServiceURL,
@@ -23,10 +22,10 @@ const url = `https://${AZURE_STORAGE_ACCOUNT_NAME}.blob.core.windows.net`;
 const inMemoryStorage = multer.memoryStorage();
 const uploadStrategy = multer({ storage: inMemoryStorage }).single('image');
 const router = express.Router();
-const containerName = 'images';
+const CONTAINER_NAME = 'images';
 const ONE_MEGABYTE = 1024 * 1024;
-const uploadOptions = { bufferSize: 4 * ONE_MEGABYTE, maxBuffers: 20 };
 const ONE_MINUTE = 60 * 1000;
+const uploadOptions = { bufferSize: 4 * ONE_MEGABYTE, maxBuffers: 20 };
 
 const sharedKeyCredential = new SharedKeyCredential(AZURE_STORAGE_ACCOUNT_NAME, AZURE_STORAGE_ACCOUNT_ACCESS_KEY);
 const pipeline = StorageURL.newPipeline(sharedKeyCredential);
@@ -38,25 +37,24 @@ const getBlobName = originalName => {
   return `${identifier}-${originalName}`;
 };
 
-router.post('/', uploadStrategy, async (req, res) => {
+router.post('/', uploadStrategy, (req, res) => {
   const aborter = Aborter.timeout(30 * ONE_MINUTE);
   const blobName = getBlobName(req.file.originalname);
   const stream = getStream(req.file.buffer);
-  const containerURL = ContainerURL.fromServiceURL(serviceURL, containerName);
+  const containerURL = ContainerURL.fromServiceURL(serviceURL, CONTAINER_NAME);
   const blockBlobURL = BlockBlobURL.fromContainerURL(containerURL, blobName);
 
-  try {
-
-    await uploadStreamToBlockBlob(aborter, stream,
-      blockBlobURL, uploadOptions.bufferSize, uploadOptions.maxBuffers);
-
-    res.json({ message: 'File uploaded to Azure Blob storage.' });
-
-  } catch (err) {
-
-    res.render('error', { message: err.message });
-
-  }
+  uploadStreamToBlockBlob(
+    aborter,
+    stream,
+    blockBlobURL,
+    uploadOptions.bufferSize,
+    uploadOptions.maxBuffers
+  ).then(() => res.json({ message: 'File uploaded to Azure Blob storage.' }))
+    .catch(err => res.json({ message: err.message }));
 });
 
+router.get('/', (req, res) => {
+  res.json(['testing', 'it', 'out']);
+});
 module.exports = router;
