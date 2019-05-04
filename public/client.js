@@ -1,15 +1,15 @@
-function fetchImages (){
+function updateGallery (){
   while (gallery.firstChild) {
     gallery.removeChild(gallery.firstChild);
   }
 
-  fetch('/images')
+  fetch('/api/images')
     .then(res => res.json())
     .then(res => {
-      res.forEach(image => {
+      res.forEach(imageURL => {
         const div = document.createElement('div');
         const img = document.createElement('img');
-        img.src = `/images/${image}`;
+        img.src = imageURL;
         img.classList.add('gallery-img');
         div.appendChild(img);
         gallery.appendChild(div);
@@ -36,3 +36,4 @@ const form = document.querySelector('form');
 const gallery = document.querySelector('#gallery');
 
 form.addEventListener('submit', submitImage);
+updateGallery();
