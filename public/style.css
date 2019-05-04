@@ -1,6 +1,12 @@
 .gallery-img {
-  max-width: 300px;
-  max-height: 200px;
+  height: 240px;
+  margin-right: 1rem;
+  margin-bottom: 1rem;
+}
+
+.main-section {
+  margin-top: 3rem;
+  margin-bottom: 3rem;
 }
 
 footer {
@@ -9,4 +15,8 @@ footer {
   width: 100%;
   padding-top: 3rem;
   padding-bottom: 3rem;
+}
+
+a {
+  color: #fff;
 }

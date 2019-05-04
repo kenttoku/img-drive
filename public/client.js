@@ -27,13 +27,12 @@ function submitImage (e) {
   fetch('/api/images', {
     method: 'POST',
     body: formData
-  }).then(res => res.json())
-    .then(res => console.log(res));
+  }).then(() => updateGallery());
   input.value = null;
 }
 
-const form = document.querySelector('form');
+const imgForm = document.querySelector('#imgForm');
 const gallery = document.querySelector('#gallery');
 
-form.addEventListener('submit', submitImage);
+imgForm.addEventListener('submit', submitImage);
 updateGallery();
