@@ -1,12 +1,20 @@
 /* eslint-disable no-console */
 const express = require('express');
 const morgan = require('morgan');
+const passport = require('passport');
 
 const { PORT } = require('./config');
 const db = require('./db');
+const localStrategy = require('./passport/local-strategy');
+
+// Routers
 const imageRouter = require('./routers/image-router');
+
 // Create an Express app
 const app = express();
+
+// Set up Passport
+passport.use(localStrategy);
 
 // Log all requests
 app.use(morgan('dev'));
