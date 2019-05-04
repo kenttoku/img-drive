@@ -9,6 +9,10 @@
   margin-bottom: 3rem;
 }
 
+main {
+  padding-bottom: 5rem;
+}
+
 footer {
   position: fixed;
   bottom: 0;
