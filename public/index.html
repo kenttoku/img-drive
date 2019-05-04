@@ -18,18 +18,24 @@
       </div>
     </div>
   </header>
-  <main class="row">
-    <form id="upload-form" action="/upload" method="POST" enctype="multipart/form-data">
-      <h2>Select an image to upload:</h2>
-      <div class="upload-container"><input id="file-picker" type="file" name="image"></div>
-      <div><input type="submit" value="Upload Image"></div>
-    </form>
-    <section class="col-12" id="gallery">
+  <main>
+    <div class="container">
+      <form id="upload-form" action="/upload" method="POST" enctype="multipart/form-data">
+        <h2>Select an image to upload:</h2>
+        <div class="upload-container"><input id="file-picker" type="file" name="image"></div>
+        <div><input type="submit" value="Upload Image"></div>
+      </form>
+      <section class="col-12" id="gallery">
 
-    </section>
+      </section>
+  </div>
   </main>
-  <footer class="row">
-    <p>Footer</p>
+  <footer class="text-muted">
+    <div class="container">
+      <p class="float-right">
+        <a href="#">Back to top</a>
+      </p>
+    </div>
   </footer>
   <script src="client.js"></script>
 </body>
