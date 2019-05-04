@@ -2,7 +2,7 @@ const express = require('express');
 const morgan = require('morgan');
 
 const { PORT } = require('./config');
-
+const db = require('./db');
 const imageRouter = require('./routers/image-router');
 
 // Create an Express app
@@ -21,5 +21,16 @@ app.use(express.json());
 app.use('/api/images', imageRouter);
 
 // Listen for incoming connections
-// eslint-disable-next-line no-console
-app.listen(PORT, () => console.log(`Server up on PORT ${PORT}`));
+app.listen(PORT, () => {
+  // eslint-disable-next-line no-console
+  console.log(`Server up on PORT ${PORT}`);
+
+  db
+    .authenticate()
+    .then(() => {
+      console.log('Connection has been established successfully.');
+    })
+    .catch(err => {
+      console.error('Unable to connect to the database:', err);
+    });
+});
