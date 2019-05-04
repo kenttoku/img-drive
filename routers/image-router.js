@@ -8,7 +8,7 @@ const {
   uploadStreamToBlockBlob
 } = require('@azure/storage-blob');
 const express = require('express');
-const getStream = require('into-stream');
+const intoStream = require('into-stream');
 const multer = require('multer');
 const uuidv4 = require('uuid/v4');
 
@@ -49,7 +49,7 @@ router.get('/', (req, res) => {
 router.post('/', uploadStrategy, (req, res) => {
   const aborter = Aborter.timeout(30 * ONE_MINUTE);
   const blobName = `${uuidv4()}-${req.file.originalname}`;
-  const stream = getStream(req.file.buffer);
+  const stream = intoStream(req.file.buffer);
   const blockBlobURL = BlockBlobURL.fromContainerURL(containerURL, blobName);
 
   uploadStreamToBlockBlob(
