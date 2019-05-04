@@ -4,6 +4,7 @@ const morgan = require('morgan');
 const { PORT } = require('./config');
 const db = require('./db');
 const imageRouter = require('./routers/image-router');
+const User = require('./models/user-model');
 
 // Create an Express app
 const app = express();
@@ -33,4 +34,6 @@ app.listen(PORT, () => {
     .catch(err => {
       console.error('Unable to connect to the database:', err);
     });
+
+  User.create({ username: 'kent', password: 'password123' });
 });
