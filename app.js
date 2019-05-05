@@ -9,6 +9,7 @@ const localStrategy = require('./passport/local-strategy');
 
 // Routers
 const imageRouter = require('./routers/image-router');
+const userRouter = require('./routers/user-router');
 
 // Create an Express app
 const app = express();
@@ -27,7 +28,7 @@ app.use(express.json());
 
 // Mount routers
 app.use('/api/images', imageRouter);
-// app.use('/api/users', userRouter);
+app.use('/api/users', userRouter);
 
 // Listen for incoming connections
 app.listen(PORT, () => {
