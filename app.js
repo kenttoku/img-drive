@@ -6,6 +6,7 @@ const passport = require('passport');
 
 const { PORT } = require('./config');
 const db = require('./db');
+const jwtStrategy = require('./passport/jwt-strategy');
 const localStrategy = require('./passport/local-strategy');
 
 // Routers
@@ -25,6 +26,7 @@ nunjucks.configure('views', {
 
 // Set up Passport
 passport.use(localStrategy);
+passport.use(jwtStrategy);
 
 // Log all requests
 app.use(morgan('dev'));
