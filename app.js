@@ -8,6 +8,7 @@ const db = require('./db');
 const localStrategy = require('./passport/local-strategy');
 
 // Routers
+const authRouter = require('./routers/auth-router');
 const imageRouter = require('./routers/image-router');
 const userRouter = require('./routers/user-router');
 
@@ -27,6 +28,7 @@ app.use(express.static('public'));
 app.use(express.json());
 
 // Mount routers
+app.use('/api/auth', authRouter);
 app.use('/api/images', imageRouter);
 app.use('/api/users', userRouter);
 
