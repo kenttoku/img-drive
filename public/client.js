@@ -141,7 +141,7 @@ if (navbar) navbar.addEventListener('click', checkLogout);
 updateGallery();
 
 // Add logout button to header if logged in
-// isLoggedIn()
-//   .then(res => {
-//     updateNavbarButtons(res);
-//   });
+isLoggedIn()
+  .then(res => {
+    updateNavbarButtons(res);
+  });
