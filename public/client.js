@@ -54,18 +54,35 @@ function signup (e) {
 
 function login (e) {
   e.preventDefault();
-  console.log('login');
+  const username = document.querySelector('#loginForm #inputUsername').value;
+  const password = document.querySelector('#loginForm #inputPassword').value;
+  fetch('/api/auth', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ username, password })
+  }).then(res => res.json())
+    .then(authToken => window.localStorage.setItem('authToken', authToken))
+    .then(() => window.location.replace('/'));
 }
 
-// Forms
+function logout (e) {
+  
+}
+// Get elements
 const imgForm = document.querySelector('#imgForm');
 const signupForm = document.querySelector('#signupForm');
 const loginForm = document.querySelector('#loginForm');
+const logOutButton = document.querySelector('#logOutButton');
 
 // Add event listeners
 if (imgForm) imgForm.addEventListener('submit', submitImage);
 if (signupForm) signupForm.addEventListener('submit', signup);
 if (loginForm) loginForm.addEventListener('submit', login);
+if (logOutButton) logOutButton.addEventListener('submit', login);
 
-// Sign up form
+// Update gallery load
 updateGallery();
+
+// Update navbar if logged in
