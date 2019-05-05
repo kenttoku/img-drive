@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 const express = require('express');
 const morgan = require('morgan');
+const nunjucks = require('nunjucks');
 const passport = require('passport');
 
 const { PORT } = require('./config');
@@ -11,9 +12,16 @@ const localStrategy = require('./passport/local-strategy');
 const authRouter = require('./routers/auth-router');
 const imageRouter = require('./routers/image-router');
 const userRouter = require('./routers/user-router');
+const viewRouter = require('./routers/view-router');
 
 // Create an Express app
 const app = express();
+
+// Configure Nunjucks
+nunjucks.configure('views', {
+  autoescape: true,
+  express: app
+});
 
 // Set up Passport
 passport.use(localStrategy);
@@ -31,6 +39,7 @@ app.use(express.json());
 app.use('/api/auth', authRouter);
 app.use('/api/images', imageRouter);
 app.use('/api/users', userRouter);
+app.use('/', viewRouter);
 
 // Listen for incoming connections
 app.listen(PORT, () => {
