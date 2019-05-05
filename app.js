@@ -27,6 +27,7 @@ app.use(express.json());
 
 // Mount routers
 app.use('/api/images', imageRouter);
+// app.use('/api/users', userRouter);
 
 // Listen for incoming connections
 app.listen(PORT, () => {
