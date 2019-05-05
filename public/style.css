@@ -1,22 +1,27 @@
+html, body {
+  margin: 0;
+  min-height: 100%;
+}
+
 .gallery-img {
   height: 240px;
-  margin-right: 1rem;
-  margin-bottom: 1rem;
+  margin-right: 16px;
+  margin-bottom: 16px;
 }
 
 .main-section {
-  margin-top: 3rem;
-  margin-bottom: 3rem;
+  margin-top: 48px;
+  margin-bottom: 48px;
 }
 
 main {
-  padding-bottom: 5rem;
+  padding-bottom: 80px;
 }
 
 footer {
   width: 100%;
-  padding-top: 3rem;
-  padding-bottom: 3rem;
+  padding-top: 48px;
+  padding-bottom: 48px;
 }
 
 a {
