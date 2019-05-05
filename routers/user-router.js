@@ -1,5 +1,6 @@
 const express = require('express');
 const User = require('../models/user-model');
+const createAuthToken = require('../utils/create-auth-token');
 
 const router = express.Router();
 
@@ -9,7 +10,8 @@ router.post('/', (req, res, next) => {
     username,
     password
   }).then(result => {
-    return res.status(201).location(`/api/users/${result.id}`).json(result);
+    const authToken = createAuthToken({ username: result.dataValues.username });
+    res.json(authToken);
   }).catch(err => next(err));
 });
 
