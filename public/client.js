@@ -101,7 +101,6 @@ function logout () {
 
 function isLoggedIn () {
   const authToken = window.localStorage.getItem('authToken');
-  let result;
 
   if (!authToken) {
     return false;
@@ -142,7 +141,7 @@ if (navbar) navbar.addEventListener('click', checkLogout);
 updateGallery();
 
 // Add logout button to header if logged in
-isLoggedIn()
-  .then(res => {
-    updateNavbarButtons(res);
-  });
+// isLoggedIn()
+//   .then(res => {
+//     updateNavbarButtons(res);
+//   });
