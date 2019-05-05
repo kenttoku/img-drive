@@ -23,6 +23,21 @@ function updateGallery (){
     });
 }
 
+function updateNavbarButtons (isLoggedIn) {
+  const navbarButtons = document.querySelector('#navbarButtons');
+
+  if (isLoggedIn) {
+    navbarButtons.innerHTML = `
+    <li class="nav-item">
+      <button type="button" class="btn btn-primary" id="logoutButton">Log out</button>
+    </li>
+    `;
+
+    const logoutButton = document.querySelector('#logoutButton');
+    if (logoutButton) logoutButton.addEventListener('click', logout);
+  }
+}
+
 function submitImage (e) {
   e.preventDefault();
   const input = document.querySelector('input');
@@ -67,22 +82,54 @@ function login (e) {
     .then(() => window.location.replace('/'));
 }
 
-function logout (e) {
-  
+function logout () {
+  console.log('logging out');
 }
+
+function isLoggedIn () {
+  const authToken = window.localStorage.getItem('authToken');
+  let result;
+
+  if (!authToken) {
+    return false;
+  }
+
+  return fetch('/api/auth/refresh', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${authToken}`
+    }
+  }).then(res => res.json())
+    .then(res => {
+      if (res.name === 'AuthenticationError') {
+        window.localStorage.removeItem('authToken');
+        return false;
+      } else {
+        window.localStorage.setItem('authToken', res);
+        return true;
+      }
+    })
+    .catch(err => console.err(err));
+}
+
 // Get elements
 const imgForm = document.querySelector('#imgForm');
 const signupForm = document.querySelector('#signupForm');
 const loginForm = document.querySelector('#loginForm');
-const logOutButton = document.querySelector('#logOutButton');
+const logoutButton = document.querySelector('#logoutButton');
+if (logoutButton) logoutButton.addEventListener('click', logout);
 
 // Add event listeners
 if (imgForm) imgForm.addEventListener('submit', submitImage);
 if (signupForm) signupForm.addEventListener('submit', signup);
 if (loginForm) loginForm.addEventListener('submit', login);
-if (logOutButton) logOutButton.addEventListener('submit', login);
 
 // Update gallery load
 updateGallery();
 
-// Update navbar if logged in
+// Add logout button to header if logged in
+isLoggedIn()
+  .then(res => {
+    updateNavbarButtons(res);
+  });
