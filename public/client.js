@@ -32,9 +32,15 @@ function updateNavbarButtons (isLoggedIn) {
       <button type="button" class="btn btn-primary" id="logoutButton">Log out</button>
     </li>
     `;
-
-    const logoutButton = document.querySelector('#logoutButton');
-    if (logoutButton) logoutButton.addEventListener('click', logout);
+  } else {
+    navbarButtons.innerHTML = `
+    <li class="nav-item">
+      <a class="nav-link" href="/signup">Sign up</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/login">Log in</a>
+    </li>
+    `;
   }
 }
 
@@ -82,8 +88,15 @@ function login (e) {
     .then(() => window.location.replace('/'));
 }
 
+function checkLogout (e) {
+  if (e.target.id === 'logoutButton') {
+    logout();
+  }
+}
+
 function logout () {
-  console.log('logging out');
+  window.localStorage.removeItem('authToken');
+  updateNavbarButtons(false);
 }
 
 function isLoggedIn () {
@@ -117,13 +130,13 @@ function isLoggedIn () {
 const imgForm = document.querySelector('#imgForm');
 const signupForm = document.querySelector('#signupForm');
 const loginForm = document.querySelector('#loginForm');
-const logoutButton = document.querySelector('#logoutButton');
-if (logoutButton) logoutButton.addEventListener('click', logout);
+const navbar = document.querySelector('#navbar');
 
 // Add event listeners
 if (imgForm) imgForm.addEventListener('submit', submitImage);
 if (signupForm) signupForm.addEventListener('submit', signup);
 if (loginForm) loginForm.addEventListener('submit', login);
+if (navbar) navbar.addEventListener('click', checkLogout);
 
 // Update gallery load
 updateGallery();
