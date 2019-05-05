@@ -3,9 +3,10 @@
 {% include "meta/head.njk" %}
 <body>
   {% include "components/header.njk" %}
-  <main role="main">
-    <p>login form</p>
-  </main>
+  {% set formClass = "form-login" %}
+  {% set formName = "Log in" %}
+  {% set formButton = "Log in" %}
+  {% include "components/auth-form.njk" %}
   {% include "components/footer.njk" %}
   {% include "meta/scripts.njk" %}
 </body>
