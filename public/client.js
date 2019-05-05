@@ -48,8 +48,8 @@ function signup (e) {
     },
     body: JSON.stringify({ username, password })
   }).then(res => res.json())
-    .then(res => console.log(res))
-    .then(res => window.location.replace('/'));
+    .then(authToken => window.localStorage.setItem('authToken', authToken))
+    .then(() => window.location.replace('/'));
 }
 
 function login (e) {
