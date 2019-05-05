@@ -39,8 +39,17 @@ function submitImage (e) {
 
 function signup (e) {
   e.preventDefault();
-  console.log('signup');
-  return;
+  const username = document.querySelector('#signupForm #inputUsername').value;
+  const password = document.querySelector('#signupForm #inputPassword').value;
+  fetch('/api/users', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ username, password })
+  }).then(res => res.json())
+    .then(res => console.log(res))
+    .then(res => window.location.replace('/'));
 }
 
 function login (e) {
@@ -55,8 +64,8 @@ const loginForm = document.querySelector('#loginForm');
 
 // Add event listeners
 if (imgForm) imgForm.addEventListener('submit', submitImage);
-if (signupForm) signupForm.addEventListener('submit', login);
-if (loginForm) loginForm.addEventListener('submit', signup);
+if (signupForm) signupForm.addEventListener('submit', signup);
+if (loginForm) loginForm.addEventListener('submit', login);
 
 // Sign up form
 updateGallery();
