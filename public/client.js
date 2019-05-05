@@ -1,4 +1,10 @@
+// Function to update the gallery
 function updateGallery (){
+  const gallery = document.querySelector('#gallery');
+  if (!gallery) {
+    return;
+  }
+
   while (gallery.firstChild) {
     gallery.removeChild(gallery.firstChild);
   }
@@ -31,8 +37,26 @@ function submitImage (e) {
   input.value = null;
 }
 
-const imgForm = document.querySelector('#imgForm');
-const gallery = document.querySelector('#gallery');
+function signup (e) {
+  e.preventDefault();
+  console.log('signup');
+  return;
+}
 
-imgForm.addEventListener('submit', submitImage);
+function login (e) {
+  e.preventDefault();
+  console.log('login');
+}
+
+// Forms
+const imgForm = document.querySelector('#imgForm');
+const signupForm = document.querySelector('#signupForm');
+const loginForm = document.querySelector('#loginForm');
+
+// Add event listeners
+if (imgForm) imgForm.addEventListener('submit', submitImage);
+if (signupForm) signupForm.addEventListener('submit', login);
+if (loginForm) loginForm.addEventListener('submit', signup);
+
+// Sign up form
 updateGallery();

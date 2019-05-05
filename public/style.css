@@ -28,14 +28,14 @@ a {
   color: #fff;
 }
 
-.form-signup, .form-login {
+.form-auth {
   width: 100%;
   max-width: 320px;
-  padding: 20% 16px;
+  padding: 16% 16px;
   margin: auto;
 }
 
-.form-signup .form-control, .form-login .form-control {
+.form-auth .form-control {
   position: relative;
   box-sizing: border-box;
   height: auto;
@@ -43,17 +43,17 @@ a {
   font-size: 16px;
 }
 
-.form-signup .form-control:focus, .form-login .form-control:focus {
+.form-auth .form-control:focus {
   z-index: 2;
 }
 
-.form-signup input[type="text"], .form-login input[type="text"] {
+.form-auth input[type="text"] {
   margin-bottom: -1px;
   border-bottom-right-radius: 0;
   border-bottom-left-radius: 0;
 }
 
-.form-signup input[type="password"], .form-login input[type="password"] {
+.form-auth input[type="password"] {
   margin-bottom: 10px;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
