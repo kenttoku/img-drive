@@ -45,14 +45,6 @@ const containerURL = ContainerURL.fromServiceURL(serviceURL, CONTAINER_NAME);
 
 // Returns an array of URLs of images
 router.get('/', (req, res, next) => {
-// The List Blobs operation returns a list of the blobs under the specified container
-// Aborter will not timeout
-  // containerURL.listBlobFlatSegment(Aborter.none)
-  //   .then(listBlobsResponse => {
-  //     res.json(listBlobsResponse.segment.blobItems.map(item => {
-  //       return `${containerURL.storageClientContext.url}/${item.name}`;
-  //     }));
-  //   });
   Image.findAll()
     .then(images => res.json(images.map(image => {
       return {
@@ -84,6 +76,33 @@ router.post('/', jwtAuth, uploadStrategy, (req, res, next) => {
   )
     .then(() => {
       Image.create({ url: blockBlobURL.url, username: req.user.username });
+    })
+    .then(() => {
+      res.json({ message: 'File uploaded to Azure Blob storage.' });
+    })
+    .catch(err => next(err));
+});
+
+router.post('/temp' , uploadStrategy, (req, res, next) => {
+  // Timeout after 30 minutes
+  const aborter = Aborter.timeout(30 * ONE_MINUTE);
+  // Add a random string before the original filename
+  const blobName = `${uuidv1()}-${req.file.originalname}`;
+  // Convert image to stream
+  const stream = intoStream(req.file.buffer);
+  // BlockBlobURL defines a set of operations applicable to block blobs.
+  const blockBlobURL = BlockBlobURL.fromContainerURL(containerURL, blobName);
+
+  // Upload to Blob Storage
+  uploadStreamToBlockBlob(
+    aborter,
+    stream,
+    blockBlobURL,
+    uploadOptions.bufferSize,
+    uploadOptions.maxBuffers
+  )
+    .then(() => {
+      Image.create({ url: blockBlobURL.url, username: 'anonymous' });
     })
     .then(() => {
       res.json({ message: 'File uploaded to Azure Blob storage.' });

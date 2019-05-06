@@ -40,7 +40,7 @@ function updateGallery (){
 function updatePage (isLoggedIn) {
   const navbarButtons = document.querySelector('#navbarButtons');
   const jumbotronButtons = document.querySelector('#jumbotronButtons');
-  const imgForm = document.querySelector('#imgForm');
+  // const imgForm = document.querySelector('#imgForm');
 
   if (isLoggedIn) {
     navbarButtons.innerHTML = `
@@ -54,7 +54,7 @@ function updatePage (isLoggedIn) {
       <button class="btn btn-secondary my-2">View my images</button>
     `;
 
-    imgForm.classList.remove('d-none');
+    // imgForm.classList.remove('d-none');
   } else {
     navbarButtons.innerHTML = `
     <li class="nav-item">
@@ -69,28 +69,33 @@ function updatePage (isLoggedIn) {
       <a href="/signup" class="btn btn-primary my-2">Sign up</a>
       <a href="/login" class="btn btn-secondary my-2">Log in</a>
     `;
-    imgForm.classList.add('d-none');
+    // imgForm.classList.add('d-none');
   }
 }
 
 function submitImage (e) {
-  const authToken = window.localStorage.getItem('authToken');
-
-  if (!authToken) {
-    return false;
-  }
-
   e.preventDefault();
+  const authToken = window.localStorage.getItem('authToken');
   const input = document.querySelector('input');
   const curFiles = input.files;
   const formData = new FormData();
   formData.append('image', curFiles[0]);
 
-  fetch('/api/images', {
-    method: 'POST',
-    body: formData,
-    headers: { 'Authorization': `Bearer ${authToken}` }
-  }).then(() => updateGallery());
+  if (!authToken) {
+    appendImage();
+    fetch('/api/images/temp', {
+      method: 'POST',
+      body: formData,
+    }).catch(err => console.error(err));
+  } else {
+    appendImage();
+    fetch('/api/images', {
+      method: 'POST',
+      body: formData,
+      headers: { 'Authorization': `Bearer ${authToken}` }
+    }).catch(err => console.error(err));
+  }
+
   input.value = null;
 }
 
@@ -107,6 +112,20 @@ function signup (e) {
   }).then(res => res.json())
     .then(authToken => window.localStorage.setItem('authToken', authToken))
     .then(() => window.location.replace('/'));
+}
+
+function appendImage () {
+  const gallery = document.querySelector('#gallery');
+  const curFiles = filePicker.files;
+
+  // If no files selected, show paragraph, otherwise, show image preview
+  if (curFiles.length) {
+    const image = document.createElement('img');
+    image.src = window.URL.createObjectURL(curFiles[0]);
+    image.classList.add('gallery-img');
+
+    gallery.appendChild(image);
+  }
 }
 
 function login (e) {
@@ -166,12 +185,14 @@ const imgForm = document.querySelector('#imgForm');
 const signupForm = document.querySelector('#signupForm');
 const loginForm = document.querySelector('#loginForm');
 const navbar = document.querySelector('#navbar');
+const filePicker = document.querySelector('#filePicker');
 
 // Add event listeners
 if (imgForm) imgForm.addEventListener('submit', submitImage);
 if (signupForm) signupForm.addEventListener('submit', signup);
 if (loginForm) loginForm.addEventListener('submit', login);
 if (navbar) navbar.addEventListener('click', checkLogout);
+if (filePicker) filePicker.addEventListener('change', previewImage);
 
 // Update gallery load
 updateGallery();

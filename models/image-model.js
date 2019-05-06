@@ -8,7 +8,7 @@ const Image = db.define('image', {
   },
   username: {
     type: Sequelize.STRING,
-    allowNull: false
+    allowNull: true
   }
 }, {
   timestamps: false,
