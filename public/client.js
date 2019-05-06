@@ -97,6 +97,7 @@ function submitImage (e) {
   }
 
   input.value = null;
+  previewImage();
 }
 
 function signup (e) {
@@ -120,12 +121,49 @@ function appendImage () {
 
   // If no files selected, show paragraph, otherwise, show image preview
   if (curFiles.length) {
+    const gridBox = document.createElement('div');
+    gridBox.classList.add('col-md-4');
+
+    const card = document.createElement('div');
+    card.classList.add('card');
+
+    const img = document.createElement('img');
+    img.src = window.URL.createObjectURL(curFiles[0]);
+    img.classList.add('gallery-img', 'card-img-top');
+
+    const cardBody = document.createElement('div');
+    cardBody.classList.add('card-body', 'text-center', 'd-flex', 'flex-column-reverse');
+
+    const figcaption = document.createElement('figcaption');
+    figcaption.innerHTML = 'uploaded by you!';
+    gallery.appendChild(gridBox);
+    gridBox.appendChild(card);
+    card.appendChild(img);
+    card.appendChild(cardBody);
+    cardBody.appendChild(figcaption);
+  }
+}
+
+function previewImage () {
+  const preview = document.querySelector('#preview');
+  const curFiles = filePicker.files;
+
+  while (preview.firstChild) {
+    preview.removeChild(preview.firstChild);
+  }
+
+  if (!curFiles.length) {
+    const para = document.createElement('p');
+    para.textContent = 'No files currently selected for upload';
+    preview.appendChild(para);
+  } else {
     const image = document.createElement('img');
     image.src = window.URL.createObjectURL(curFiles[0]);
     image.classList.add('gallery-img');
 
-    gallery.appendChild(image);
+    preview.appendChild(image);
   }
+
 }
 
 function login (e) {
