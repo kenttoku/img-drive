@@ -30,13 +30,19 @@ const CONTAINER_NAME = 'images';
 const ONE_MEGABYTE = 1024 * 1024;
 const ONE_MINUTE = 60 * 1000;
 const uploadOptions = { bufferSize: 4 * ONE_MEGABYTE, maxBuffers: 20 };
+// SharedKeyCredential for account key authorization of Azure Storage service.
 const sharedKeyCredential = new SharedKeyCredential(AZURE_STORAGE_ACCOUNT_NAME, AZURE_STORAGE_ACCOUNT_ACCESS_KEY);
+// A Pipeline class containing HTTP request policies.
 const pipeline = StorageURL.newPipeline(sharedKeyCredential);
+// A ServiceURL represents a URL to the Azure Storage File service allowing you to manipulate file shares.
 const serviceURL = new ServiceURL(url, pipeline);
+//A ContainerURL represents a URL to the Azure Storage container allowing you to manipulate its blobs.
 const containerURL = ContainerURL.fromServiceURL(serviceURL, CONTAINER_NAME);
 
 // Returns an array of URLs of images
 router.get('/', (req, res) => {
+// The List Blobs operation returns a list of the blobs under the specified container
+// Aborter will not timeout
   containerURL.listBlobFlatSegment(Aborter.none)
     .then(listBlobsResponse => {
       res.json(listBlobsResponse.segment.blobItems.map(item => {
@@ -47,11 +53,16 @@ router.get('/', (req, res) => {
 
 // Uploads images to BlobStorage
 router.post('/', uploadStrategy, (req, res) => {
+  // Timeout after 30 minutes
   const aborter = Aborter.timeout(30 * ONE_MINUTE);
+  // Add a random string before the original filename
   const blobName = `${uuidv4()}-${req.file.originalname}`;
+  // Convert image to stream
   const stream = intoStream(req.file.buffer);
+  // BlockBlobURL defines a set of operations applicable to block blobs.
   const blockBlobURL = BlockBlobURL.fromContainerURL(containerURL, blobName);
 
+  // Upload to Blob Storage
   uploadStreamToBlockBlob(
     aborter,
     stream,
