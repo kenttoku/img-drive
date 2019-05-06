@@ -17,6 +17,7 @@ const {
   AZURE_STORAGE_ACCOUNT_NAME,
   AZURE_STORAGE_ACCOUNT_ACCESS_KEY
 } = require('../config');
+const Image = require('../models/image-model');
 
 const jwtAuth = passport.authenticate('jwt', { session: false, failWithError: true });
 
@@ -56,7 +57,6 @@ router.get('/', (req, res) => {
 
 // Uploads images to BlobStorage
 router.post('/', jwtAuth, uploadStrategy, (req, res) => {
-  console.log(req.user);
   // Timeout after 30 minutes
   const aborter = Aborter.timeout(30 * ONE_MINUTE);
   // Add a random string before the original filename
@@ -73,7 +73,13 @@ router.post('/', jwtAuth, uploadStrategy, (req, res) => {
     blockBlobURL,
     uploadOptions.bufferSize,
     uploadOptions.maxBuffers
-  ).then(() => res.json({ message: 'File uploaded to Azure Blob storage.' }))
+  )
+    .then(() => {
+      Image.create({ url: blockBlobURL.url, username: req.user.username });
+    })
+    .then(() => {
+      res.json({ message: 'File uploaded to Azure Blob storage.' });
+    })
     .catch(err => res.json({ message: err.message }));
 });
 

@@ -2,11 +2,11 @@ const Sequelize = require('sequelize');
 const db = require('../db');
 
 const Image = db.define('image', {
-  link: {
+  url: {
     type: Sequelize.STRING,
     allowNull: false
   },
-  user: {
+  username: {
     type: Sequelize.STRING,
     allowNull: false
   }
