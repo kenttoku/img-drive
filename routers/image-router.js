@@ -11,7 +11,7 @@ const express = require('express');
 const intoStream = require('into-stream');
 const multer = require('multer');
 const passport = require('passport');
-const uuidv4 = require('uuid/v4');
+const uuidv1 = require('uuid/v1');
 
 const {
   AZURE_STORAGE_ACCOUNT_NAME,
@@ -60,7 +60,7 @@ router.post('/', jwtAuth, uploadStrategy, (req, res) => {
   // Timeout after 30 minutes
   const aborter = Aborter.timeout(30 * ONE_MINUTE);
   // Add a random string before the original filename
-  const blobName = `${uuidv4()}-${req.file.originalname}`;
+  const blobName = `${uuidv1()}-${req.file.originalname}`;
   // Convert image to stream
   const stream = intoStream(req.file.buffer);
   // BlockBlobURL defines a set of operations applicable to block blobs.
