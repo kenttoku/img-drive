@@ -44,19 +44,27 @@ const serviceURL = new ServiceURL(url, pipeline);
 const containerURL = ContainerURL.fromServiceURL(serviceURL, CONTAINER_NAME);
 
 // Returns an array of URLs of images
-router.get('/', (req, res) => {
+router.get('/', (req, res, next) => {
 // The List Blobs operation returns a list of the blobs under the specified container
 // Aborter will not timeout
-  containerURL.listBlobFlatSegment(Aborter.none)
-    .then(listBlobsResponse => {
-      res.json(listBlobsResponse.segment.blobItems.map(item => {
-        return `${containerURL.storageClientContext.url}/${item.name}`;
-      }));
-    });
+  // containerURL.listBlobFlatSegment(Aborter.none)
+  //   .then(listBlobsResponse => {
+  //     res.json(listBlobsResponse.segment.blobItems.map(item => {
+  //       return `${containerURL.storageClientContext.url}/${item.name}`;
+  //     }));
+  //   });
+  Image.findAll()
+    .then(images => res.json(images.map(image => {
+      return {
+        url: image.dataValues.url,
+        username: image.dataValues.username
+      };
+    })))
+    .catch(err => next(err));
 });
 
 // Uploads images to BlobStorage
-router.post('/', jwtAuth, uploadStrategy, (req, res) => {
+router.post('/', jwtAuth, uploadStrategy, (req, res, next) => {
   // Timeout after 30 minutes
   const aborter = Aborter.timeout(30 * ONE_MINUTE);
   // Add a random string before the original filename
@@ -80,7 +88,7 @@ router.post('/', jwtAuth, uploadStrategy, (req, res) => {
     .then(() => {
       res.json({ message: 'File uploaded to Azure Blob storage.' });
     })
-    .catch(err => res.json({ message: err.message }));
+    .catch(err => next(err));
 });
 
 module.exports = router;

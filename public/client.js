@@ -12,12 +12,15 @@ function updateGallery (){
   fetch('/api/images')
     .then(res => res.json())
     .then(res => {
-      res.forEach(imageURL => {
+      res.forEach(image => {
         const div = document.createElement('div');
         const img = document.createElement('img');
-        img.src = imageURL;
+        const figcaption = document.createElement('figcaption');
+        img.src = image.url;
         img.classList.add('gallery-img');
+        figcaption.innerHTML = `uploaded by ${image.username}`;
         div.appendChild(img);
+        div.appendChild(figcaption);
         gallery.appendChild(div);
       });
     });
