@@ -23,8 +23,10 @@ function updateGallery (){
     });
 }
 
-function updateNavbarButtons (isLoggedIn) {
+function updatePage (isLoggedIn) {
   const navbarButtons = document.querySelector('#navbarButtons');
+  const jumbotronButtons = document.querySelector('#jumbotronButtons');
+  const imgForm = document.querySelector('#imgForm');
 
   if (isLoggedIn) {
     navbarButtons.innerHTML = `
@@ -32,6 +34,13 @@ function updateNavbarButtons (isLoggedIn) {
       <button type="button" class="btn btn-primary" id="logoutButton">Log out</button>
     </li>
     `;
+
+    jumbotronButtons.innerHTML = `
+      <button class="btn btn-primary my-2">View all images</button>
+      <button class="btn btn-secondary my-2">View my images</button>
+    `;
+
+    imgForm.classList.remove('d-none');
   } else {
     navbarButtons.innerHTML = `
     <li class="nav-item">
@@ -41,10 +50,22 @@ function updateNavbarButtons (isLoggedIn) {
       <a class="nav-link" href="/login">Log in</a>
     </li>
     `;
+
+    jumbotronButtons.innerHTML = `
+      <a href="/signup" class="btn btn-primary my-2">Sign up</a>
+      <a href="/login" class="btn btn-secondary my-2">Log in</a>
+    `;
+    imgForm.classList.add('d-none');
   }
 }
 
 function submitImage (e) {
+  const authToken = window.localStorage.getItem('authToken');
+
+  if (!authToken) {
+    return false;
+  }
+
   e.preventDefault();
   const input = document.querySelector('input');
   const curFiles = input.files;
@@ -53,7 +74,8 @@ function submitImage (e) {
 
   fetch('/api/images', {
     method: 'POST',
-    body: formData
+    body: formData,
+    headers: { 'Authorization': `Bearer ${authToken}` }
   }).then(() => updateGallery());
   input.value = null;
 }
@@ -96,7 +118,7 @@ function checkLogout (e) {
 
 function logout () {
   window.localStorage.removeItem('authToken');
-  updateNavbarButtons(false);
+  updatePage(false);
 }
 
 function isLoggedIn () {
@@ -141,7 +163,4 @@ if (navbar) navbar.addEventListener('click', checkLogout);
 updateGallery();
 
 // Add logout button to header if logged in
-isLoggedIn()
-  .then(res => {
-    updateNavbarButtons(res);
-  });
+isLoggedIn().then(res => updatePage(res));

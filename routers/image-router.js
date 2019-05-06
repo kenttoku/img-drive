@@ -10,12 +10,15 @@ const {
 const express = require('express');
 const intoStream = require('into-stream');
 const multer = require('multer');
+const passport = require('passport');
 const uuidv4 = require('uuid/v4');
 
 const {
   AZURE_STORAGE_ACCOUNT_NAME,
   AZURE_STORAGE_ACCOUNT_ACCESS_KEY
 } = require('../config');
+
+const jwtAuth = passport.authenticate('jwt', { session: false, failWithError: true });
 
 // Create router
 const router = express.Router();
@@ -52,7 +55,8 @@ router.get('/', (req, res) => {
 });
 
 // Uploads images to BlobStorage
-router.post('/', uploadStrategy, (req, res) => {
+router.post('/', jwtAuth, uploadStrategy, (req, res) => {
+  console.log(req.user);
   // Timeout after 30 minutes
   const aborter = Aborter.timeout(30 * ONE_MINUTE);
   // Add a random string before the original filename
