@@ -8,10 +8,15 @@ const {
   uploadStreamToBlockBlob
 } = require('@azure/storage-blob');
 const express = require('express');
+const fs = require('fs');
 const intoStream = require('into-stream');
 const multer = require('multer');
 const passport = require('passport');
+const path = require('path');
 const uuidv1 = require('uuid/v1');
+
+const directoryPath = path.join(__dirname, '../public/images');
+console.log(directoryPath);
 
 const {
   AZURE_STORAGE_ACCOUNT_NAME,
@@ -27,6 +32,7 @@ const router = express.Router();
 // Configure multer
 const inMemoryStorage = multer.memoryStorage();
 const uploadStrategy = multer({ storage: inMemoryStorage }).single('image');
+const tempStrategy = multer({ dest: directoryPath }).single('image');
 
 // Configure Azure Storage
 const url = `https://${AZURE_STORAGE_ACCOUNT_NAME}.blob.core.windows.net`;
@@ -53,6 +59,7 @@ router.get('/', (req, res, next) => {
   //       return `${containerURL.storageClientContext.url}/${item.name}`;
   //     }));
   //   });
+
   Image.findAll()
     .then(images => res.json(images.map(image => {
       return {
@@ -60,7 +67,19 @@ router.get('/', (req, res, next) => {
         username: image.dataValues.username
       };
     })))
-    .catch(err => next(err));
+    .catch(() => {
+      fs.readdir(directoryPath, (err, files) => {
+        if (err) {
+          return res.json([]);
+        }
+        return res.json(files.map(file => {
+          return {
+            url: `/images/${file}`,
+            username: 'anonymous'
+          };
+        }));
+      });
+    });
 });
 
 // Uploads images to BlobStorage
@@ -89,6 +108,13 @@ router.post('/', jwtAuth, uploadStrategy, (req, res, next) => {
       res.json({ message: 'File uploaded to Azure Blob storage.' });
     })
     .catch(err => next(err));
+});
+
+router.post('/temp', tempStrategy, (req, res) => {
+  console.log(req.file);
+  if (req.file) {
+    res.json(req.file);
+  }
 });
 
 module.exports = router;

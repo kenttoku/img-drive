@@ -54,7 +54,7 @@ function updatePage (isLoggedIn) {
       <button class="btn btn-secondary my-2">View my images</button>
     `;
 
-    imgForm.classList.remove('d-none');
+    // imgForm.classList.remove('d-none');
   } else {
     navbarButtons.innerHTML = `
     <li class="nav-item">
@@ -69,28 +69,30 @@ function updatePage (isLoggedIn) {
       <a href="/signup" class="btn btn-primary my-2">Sign up</a>
       <a href="/login" class="btn btn-secondary my-2">Log in</a>
     `;
-    imgForm.classList.add('d-none');
+    // imgForm.classList.add('d-none');
   }
 }
 
 function submitImage (e) {
-  const authToken = window.localStorage.getItem('authToken');
-
-  if (!authToken) {
-    return false;
-  }
-
   e.preventDefault();
+  const authToken = window.localStorage.getItem('authToken');
   const input = document.querySelector('input');
   const curFiles = input.files;
   const formData = new FormData();
   formData.append('image', curFiles[0]);
 
-  fetch('/api/images', {
-    method: 'POST',
-    body: formData,
-    headers: { 'Authorization': `Bearer ${authToken}` }
-  }).then(() => updateGallery());
+  if (authToken) {
+    fetch('/api/images', {
+      method: 'POST',
+      body: formData,
+      headers: { 'Authorization': `Bearer ${authToken}` }
+    }).then(() => updateGallery());
+  } else {
+    fetch('/api/images/temp', {
+      method: 'POST',
+      body: formData
+    }).then(() => updateGallery());
+  }
   input.value = null;
 }
 
