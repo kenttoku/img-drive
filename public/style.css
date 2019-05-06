@@ -4,9 +4,13 @@ html, body {
 }
 
 .gallery-img {
-  height: 240px;
-  margin-right: 16px;
-  margin-bottom: 16px;
+  max-width: 80%;
+  max-height: 320px;
+  margin: 16px auto;
+}
+
+.card {
+  height: 100%
 }
 
 .main-section {

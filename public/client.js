@@ -13,15 +13,26 @@ function updateGallery (){
     .then(res => res.json())
     .then(res => {
       res.forEach(image => {
-        const div = document.createElement('div');
+        const gridBox = document.createElement('div');
+        gridBox.classList.add('col-md-4');
+
+        const card = document.createElement('div');
+        card.classList.add('card');
+
         const img = document.createElement('img');
-        const figcaption = document.createElement('figcaption');
         img.src = image.url;
-        img.classList.add('gallery-img');
+        img.classList.add('gallery-img', 'card-img-top');
+
+        const cardBody = document.createElement('div');
+        cardBody.classList.add('card-body', 'text-center', 'd-flex', 'flex-column-reverse');
+
+        const figcaption = document.createElement('figcaption');
         figcaption.innerHTML = `uploaded by ${image.username}`;
-        div.appendChild(img);
-        div.appendChild(figcaption);
-        gallery.appendChild(div);
+        gallery.appendChild(gridBox);
+        gridBox.appendChild(card);
+        card.appendChild(img);
+        card.appendChild(cardBody);
+        cardBody.appendChild(figcaption);
       });
     });
 }
