@@ -16,7 +16,6 @@ const path = require('path');
 const uuidv1 = require('uuid/v1');
 
 const directoryPath = path.join(__dirname, '../public/images');
-console.log(directoryPath);
 
 const {
   AZURE_STORAGE_ACCOUNT_NAME,
@@ -50,16 +49,7 @@ const serviceURL = new ServiceURL(url, pipeline);
 const containerURL = ContainerURL.fromServiceURL(serviceURL, CONTAINER_NAME);
 
 // Returns an array of URLs of images
-router.get('/', (req, res, next) => {
-// The List Blobs operation returns a list of the blobs under the specified container
-// Aborter will not timeout
-  // containerURL.listBlobFlatSegment(Aborter.none)
-  //   .then(listBlobsResponse => {
-  //     res.json(listBlobsResponse.segment.blobItems.map(item => {
-  //       return `${containerURL.storageClientContext.url}/${item.name}`;
-  //     }));
-  //   });
-
+router.get('/', (req, res) => {
   Image.findAll()
     .then(images => res.json(images.map(image => {
       return {
@@ -111,7 +101,6 @@ router.post('/', jwtAuth, uploadStrategy, (req, res, next) => {
 });
 
 router.post('/temp', tempStrategy, (req, res) => {
-  console.log(req.file);
   if (req.file) {
     res.json(req.file);
   }
